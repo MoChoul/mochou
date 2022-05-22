@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.property.mapper.PropertySortByLtimeMapper">
+    
+    <resultMap type="PropertySortByLtime" id="PropertySortByLtimeResult">
+        <result property="propertySortId"    column="property_sort_id"    />
+        <result property="propertySortName"    column="property_sort_name"    />
+    </resultMap>
+
+    <sql id="selectPropertySortByLtimeVo">
+        select property_sort_id, property_sort_name from property_sort_by_ltime
+    </sql>
+
+    <select id="selectPropertySortByLtimeList" parameterType="PropertySortByLtime" resultMap="PropertySortByLtimeResult">
+        <include refid="selectPropertySortByLtimeVo"/>
+        <where>  
+            <if test="propertySortName != null  and propertySortName != ''"> and property_sort_name like concat('%', #{propertySortName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectPropertySortByLtimeByPropertySortId" parameterType="Long" resultMap="PropertySortByLtimeResult">
+        <include refid="selectPropertySortByLtimeVo"/>
+        where property_sort_id = #{propertySortId}
+    </select>
+        
+    <insert id="insertPropertySortByLtime" parameterType="PropertySortByLtime" useGeneratedKeys="true" keyProperty="propertySortId">
+        insert into property_sort_by_ltime
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="propertySortName != null">property_sort_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="propertySortName != null">#{propertySortName},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePropertySortByLtime" parameterType="PropertySortByLtime">
+        update property_sort_by_ltime
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="propertySortName != null">property_sort_name = #{propertySortName},</if>
+        </trim>
+        where property_sort_id = #{propertySortId}
+    </update>
+
+    <delete id="deletePropertySortByLtimeByPropertySortId" parameterType="Long">
+        delete from property_sort_by_ltime where property_sort_id = #{propertySortId}
+    </delete>
+
+    <delete id="deletePropertySortByLtimeByPropertySortIds" parameterType="String">
+        delete from property_sort_by_ltime where property_sort_id in 
+        <foreach item="propertySortId" collection="array" open="(" separator="," close=")">
+            #{propertySortId}
+        </foreach>
+    </delete>
+</mapper>

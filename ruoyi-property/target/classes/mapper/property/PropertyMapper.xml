@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.property.mapper.PropertyMapper">
+    
+    <resultMap type="Property" id="PropertyResult">
+        <result property="propertyId"    column="property_id"    />
+        <result property="propertyName"    column="property_name"    />
+        <result property="propertyOv"    column="property_OV"    />
+        <result property="propertyPw"    column="property_PW"    />
+        <result property="propertySortByTime"    column="property_sort_by_time"    />
+        <result property="propertyCode"    column="property_code"    />
+        <result property="propertyDescribe"    column="property_describe"    />
+    </resultMap>
+
+    <sql id="selectPropertyVo">
+        select property_id, property_name, property_OV, property_PW, property_sort_by_time, property_code, property_describe from property
+    </sql>
+
+    <select id="selectPropertyList" parameterType="Property" resultMap="PropertyResult">
+        <include refid="selectPropertyVo"/>
+        <where>  
+            <if test="propertyName != null  and propertyName != ''"> and property_name like concat('%', #{propertyName}, '%')</if>
+            <if test="propertyOv != null "> and property_OV = #{propertyOv}</if>
+            <if test="propertyPw != null "> and property_PW = #{propertyPw}</if>
+            <if test="propertySortByTime != null  and propertySortByTime != ''"> and property_sort_by_time = #{propertySortByTime}</if>
+            <if test="propertyCode != null  and propertyCode != ''"> and property_code = #{propertyCode}</if>
+            <if test="propertyDescribe != null  and propertyDescribe != ''"> and property_describe = #{propertyDescribe}</if>
+        </where>
+    </select>
+    
+    <select id="selectPropertyByPropertyId" parameterType="Long" resultMap="PropertyResult">
+        <include refid="selectPropertyVo"/>
+        where property_id = #{propertyId}
+    </select>
+        
+    <insert id="insertProperty" parameterType="Property" useGeneratedKeys="true" keyProperty="propertyId">
+        insert into property
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="propertyName != null">property_name,</if>
+            <if test="propertyOv != null">property_OV,</if>
+            <if test="propertyPw != null">property_PW,</if>
+            <if test="propertySortByTime != null">property_sort_by_time,</if>
+            <if test="propertyCode != null">property_code,</if>
+            <if test="propertyDescribe != null">property_describe,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="propertyName != null">#{propertyName},</if>
+            <if test="propertyOv != null">#{propertyOv},</if>
+            <if test="propertyPw != null">#{propertyPw},</if>
+            <if test="propertySortByTime != null">#{propertySortByTime},</if>
+            <if test="propertyCode != null">#{propertyCode},</if>
+            <if test="propertyDescribe != null">#{propertyDescribe},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProperty" parameterType="Property">
+        update property
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="propertyName != null">property_name = #{propertyName},</if>
+            <if test="propertyOv != null">property_OV = #{propertyOv},</if>
+            <if test="propertyPw != null">property_PW = #{propertyPw},</if>
+            <if test="propertySortByTime != null">property_sort_by_time = #{propertySortByTime},</if>
+            <if test="propertyCode != null">property_code = #{propertyCode},</if>
+            <if test="propertyDescribe != null">property_describe = #{propertyDescribe},</if>
+        </trim>
+        where property_id = #{propertyId}
+    </update>
+
+    <delete id="deletePropertyByPropertyId" parameterType="Long">
+        delete from property where property_id = #{propertyId}
+    </delete>
+
+    <delete id="deletePropertyByPropertyIds" parameterType="String">
+        delete from property where property_id in 
+        <foreach item="propertyId" collection="array" open="(" separator="," close=")">
+            #{propertyId}
+        </foreach>
+    </delete>
+</mapper>
